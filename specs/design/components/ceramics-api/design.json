@@ -1,0 +1,86 @@
+{
+  "name": "ceramics-api",
+  "type": "service",
+  "version": "0.1.0",
+  "language": "Ballerina",
+  "buildpack": "docker",
+  "appPath": "ceramics-api",
+  "entrypoint": "deployment/service",
+  "exposure": "intranet",
+  "stories": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "dependencies": [
+    {
+      "description": "Stores products, categories, customers, carts, orders, order items, and payment records.",
+      "kind": "platform-resource",
+      "name": "ceramics-db",
+      "resourceType": "postgres"
+    },
+    {
+      "description": "Validates bearer tokens issued by Thunder to resolve the caller's role (Shopper vs Store Admin) for protected endpoints.",
+      "kind": "platform-resource",
+      "name": "user-auth",
+      "parameters": {
+        "scopes": "openid profile email"
+      },
+      "resourceType": "thunder-app"
+    },
+    {
+      "config": [
+        {
+          "description": "Stripe secret API key used to create and confirm payment charges.",
+          "key": "STRIPE_API_KEY",
+          "secret": true
+        }
+      ],
+      "description": "Card payment capture for checkout. PRD names Stripe as the reference payment provider; exact REST endpoints/spec to be confirmed and attached during implementation.",
+      "kind": "external",
+      "name": "stripe",
+      "style": "rest-api"
+    },
+    {
+      "candidates": [
+        {
+          "name": "sendgrid",
+          "package": "sendgrid",
+          "style": "rest-api"
+        },
+        {
+          "name": "resend",
+          "package": "resend",
+          "style": "rest-api"
+        },
+        {
+          "name": "postmark",
+          "package": "postmark",
+          "style": "rest-api"
+        }
+      ],
+      "description": "Sends the transactional order-confirmation email after a successful checkout. No vendor named in the requirements; pick one of the candidates.",
+      "kind": "external",
+      "name": "email-provider"
+    }
+  ],
+  "description": "Ballerina HTTP service exposing the store's product catalog, cart, checkout, order, and admin-management endpoints behind the platform's API gateway. Owns all business data (products, inventory, carts, orders, payments) in ceramics-db, calls Stripe to capture card payments, and sends the order-confirmation email via the chosen email provider. Validates Thunder-issued bearer tokens to distinguish guest, signed-in Shopper, and Store Admin callers; does not render any UI.",
+  "skillsPinned": [
+    "openapi-conventions",
+    "ballerina",
+    "api-management",
+    "thunder-authentication"
+  ]
+}
