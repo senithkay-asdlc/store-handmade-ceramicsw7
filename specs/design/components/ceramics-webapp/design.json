@@ -24,23 +24,42 @@
     14,
     15
   ],
+  "description": "React single-page app serving both the customer-facing storefront (catalog browse/search, product detail, cart, guest or signed-in checkout, order confirmation, order history) and the store admin console (catalog and inventory management, order list, fulfillment status updates) behind role-gated screens. Talks only to ceramics-api; holds no direct database or payment credentials. Does not process payments or send email itself — those are server-side concerns of ceramics-api.",
   "dependencies": [
     {
-      "description": "Backend API for catalog, cart, checkout, orders, and admin management.",
       "kind": "component",
-      "name": "ceramics-api"
+      "name": "ceramics-api",
+      "description": "Backend API for catalog, cart, checkout, orders, and admin management.",
+      "wiring": {
+        "endpoint": {
+          "component": "store-handmade-ceramicsw7-ceramics-api",
+          "name": "http",
+          "visibility": "project",
+          "envBindings": {
+            "address": "CERAMICS_API_URL"
+          }
+        }
+      }
     },
     {
-      "description": "Thunder-issued OIDC client for shopper and admin sign-in (guest checkout does not require it).",
       "kind": "platform-resource",
       "name": "user-auth",
+      "description": "Thunder-issued OIDC client for shopper and admin sign-in (guest checkout does not require it).",
+      "resourceType": "thunder-app",
       "parameters": {
         "scopes": "openid profile email"
       },
-      "resourceType": "thunder-app"
+      "wiring": {
+        "ref": "store-handmade-ce-cc106252",
+        "envBindings": {
+          "client_id": "USER_AUTH_CLIENT_ID",
+          "issuer": "USER_AUTH_ISSUER",
+          "jwks_url": "USER_AUTH_JWKS_URL",
+          "scopes": "USER_AUTH_SCOPES"
+        }
+      }
     }
   ],
-  "description": "React single-page app serving both the customer-facing storefront (catalog browse/search, product detail, cart, guest or signed-in checkout, order confirmation, order history) and the store admin console (catalog and inventory management, order list, fulfillment status updates) behind role-gated screens. Talks only to ceramics-api; holds no direct database or payment credentials. Does not process payments or send email itself — those are server-side concerns of ceramics-api.",
   "skillsPinned": [
     "wireframes",
     "react-webapp",

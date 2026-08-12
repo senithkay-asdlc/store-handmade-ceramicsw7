@@ -24,52 +24,76 @@
     14,
     15
   ],
+  "description": "Ballerina HTTP service exposing the store's product catalog, cart, checkout, order, and admin-management endpoints behind the platform's API gateway. Owns all business data (products, inventory, carts, orders, payments) in ceramics-db, calls Stripe to capture card payments, and sends the order-confirmation email via SendGrid. Validates Thunder-issued bearer tokens to distinguish guest, signed-in Shopper, and Store Admin callers; does not render any UI.",
   "dependencies": [
     {
-      "description": "Stores products, categories, customers, carts, orders, order items, and payment records.",
       "kind": "platform-resource",
       "name": "ceramics-db",
+      "description": "Stores products, categories, customers, carts, orders, order items, and payment records.",
       "resourceType": "postgres"
     },
     {
-      "description": "Validates bearer tokens issued by Thunder to resolve the caller's role (Shopper vs Store Admin) for protected endpoints.",
       "kind": "platform-resource",
       "name": "user-auth",
+      "description": "Validates bearer tokens issued by Thunder to resolve the caller's role (Shopper vs Store Admin) for protected endpoints.",
+      "resourceType": "thunder-app",
       "parameters": {
         "scopes": "openid profile email"
       },
-      "resourceType": "thunder-app"
+      "wiring": {
+        "ref": "store-handmade-ce-cc106252",
+        "envBindings": {
+          "client_id": "USER_AUTH_CLIENT_ID",
+          "issuer": "USER_AUTH_ISSUER",
+          "jwks_url": "USER_AUTH_JWKS_URL",
+          "scopes": "USER_AUTH_SCOPES"
+        }
+      }
     },
     {
-      "config": [
-        {
-          "description": "Stripe secret API key used to create and confirm payment charges.",
-          "key": "STRIPE_API_KEY",
-          "secret": true
-        }
-      ],
-      "description": "Card payment capture for checkout via the Stripe Payment Intents API (create/confirm a PaymentIntent per order). PRD names Stripe as the reference payment provider.",
       "kind": "external",
       "name": "stripe",
+      "description": "Card payment capture for checkout via the Stripe Payment Intents API (create/confirm a PaymentIntent per order). PRD names Stripe as the reference payment provider.",
+      "style": "rest-api",
       "specPath": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
-      "style": "rest-api"
-    },
-    {
       "config": [
         {
-          "description": "SendGrid API key used to authenticate Mail Send API calls.",
-          "key": "SENDGRID_API_KEY",
-          "secret": true
+          "key": "STRIPE_API_KEY",
+          "secret": true,
+          "description": "Stripe secret API key used to create and confirm payment charges."
         }
       ],
-      "description": "Sends the transactional order-confirmation email after a successful checkout via the SendGrid v3 Mail Send API (POST /mail/send).",
+      "wiring": {
+        "ref": "store-handmade-ce-69221ef7",
+        "envBindings": {
+          "STRIPE_API_KEY": "STRIPE_API_KEY"
+        }
+      }
+    },
+    {
       "kind": "external",
       "name": "sendgrid",
+      "description": "Sends the transactional order-confirmation email after a successful checkout via the SendGrid v3 Mail Send API (POST /mail/send).",
+      "style": "rest-api",
       "specPath": "https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/json/tsg_mail_v3.json",
-      "style": "rest-api"
+      "config": [
+        {
+          "key": "SENDGRID_API_KEY",
+          "secret": true,
+          "description": "SendGrid API key used to authenticate Mail Send API calls."
+        }
+      ],
+      "wiring": {
+        "ref": "store-handmade-ce-52c34bc4",
+        "envBindings": {
+          "SENDGRID_API_KEY": "SENDGRID_API_KEY"
+        }
+      }
     }
   ],
-  "description": "Ballerina HTTP service exposing the store's product catalog, cart, checkout, order, and admin-management endpoints behind the platform's API gateway. Owns all business data (products, inventory, carts, orders, payments) in ceramics-db, calls Stripe to capture card payments, and sends the order-confirmation email via SendGrid. Validates Thunder-issued bearer tokens to distinguish guest, signed-in Shopper, and Store Admin callers; does not render any UI.",
+  "exposesAPI": {
+    "auth": "end-user-required"
+  },
   "skillsPinned": [
     "openapi-conventions",
     "ballerina",
