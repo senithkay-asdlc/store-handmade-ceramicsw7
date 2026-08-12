@@ -24,7 +24,7 @@ graph TB
 
   auth["Thunder Auth (identity server)"]
   payment["Payment Provider"]
-  email["Email Provider"]
+  email["SendGrid"]
 
   shopper --> webapp
   admin --> webapp
@@ -129,7 +129,7 @@ sequenceDiagram
   participant A as Ceramics API
   participant T as Thunder Auth
   participant P as Payment Provider
-  participant E as Email Provider
+  participant E as SendGrid
 
   opt Shopper signs in
     S->>W: Sign in

@@ -15,4 +15,4 @@ ceramics-webapp -> ceramics-api
 ceramics-webapp -> user-auth
 ceramics-api -> user-auth
 ceramics-api -> payment-provider
-ceramics-api -> email-provider
+ceramics-api -> sendgrid
