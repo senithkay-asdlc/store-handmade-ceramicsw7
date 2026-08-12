@@ -62,9 +62,10 @@
           "secret": true
         }
       ],
-      "description": "Sends the transactional order-confirmation email after a successful checkout via the SendGrid Mail Send API.",
+      "description": "Sends the transactional order-confirmation email after a successful checkout via the SendGrid v3 Mail Send API (POST /mail/send).",
       "kind": "external",
       "name": "sendgrid",
+      "specPath": "https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/json/tsg_mail_v3.json",
       "style": "rest-api"
     }
   ],
