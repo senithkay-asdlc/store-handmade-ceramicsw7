@@ -7,7 +7,7 @@ component ceramics-api as "Ceramics API" service [stories: 1, 2, 3, 4, 5, 6, 7, 
 
 east user-auth as "Thunder Auth" identity-server
 south payment-provider as "Payment Provider" service
-south email-provider as "Email Provider" service
+south sendgrid as "SendGrid" service
 
 north -> ceramics-webapp
 

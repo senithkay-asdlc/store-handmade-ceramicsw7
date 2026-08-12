@@ -54,26 +54,17 @@
       "style": "rest-api"
     },
     {
-      "candidates": [
+      "config": [
         {
-          "name": "sendgrid",
-          "package": "sendgrid",
-          "style": "rest-api"
-        },
-        {
-          "name": "resend",
-          "package": "resend",
-          "style": "rest-api"
-        },
-        {
-          "name": "postmark",
-          "package": "postmark",
-          "style": "rest-api"
+          "description": "SendGrid API key used to authenticate Mail Send API calls.",
+          "key": "SENDGRID_API_KEY",
+          "secret": true
         }
       ],
-      "description": "Sends the transactional order-confirmation email after a successful checkout. No vendor named in the requirements; pick one of the candidates.",
+      "description": "Sends the transactional order-confirmation email after a successful checkout via the SendGrid Mail Send API.",
       "kind": "external",
-      "name": "email-provider"
+      "name": "sendgrid",
+      "style": "rest-api"
     }
   ],
   "description": "Ballerina HTTP service exposing the store's product catalog, cart, checkout, order, and admin-management endpoints behind the platform's API gateway. Owns all business data (products, inventory, carts, orders, payments) in ceramics-db, calls Stripe to capture card payments, and sends the order-confirmation email via the chosen email provider. Validates Thunder-issued bearer tokens to distinguish guest, signed-in Shopper, and Store Admin callers; does not render any UI.",
